@@ -9,6 +9,8 @@
 #include "Session.h"
 
 #include <boost/asio.hpp>
+#include <unordered_map>
+#include <string>
 
 using boost::asio::ip::tcp;
 
@@ -21,6 +23,7 @@ private:
 
     tcp::acceptor acceptor_;
     Room room_;
+    std::unordered_map<std::string, Room> rooms_data_;
 };
 
 

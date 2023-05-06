@@ -6,11 +6,11 @@
 
 #include <iostream>
 
-Session::Session(tcp::socket socket, Room &room) : room_(room), socket_(std::move(socket)) {
+Session::Session(tcp::socket socket, Room &room, std::unordered_map<std::string, Room>& rooms_data) : room_(room), socket_(std::move(socket)), rooms_data_(rooms_data) {
 }
 
 void Session::Start() {
-    room_.Join(shared_from_this());
+    rooms_data_[current_room_id_].Join(shared_from_this());
     ReadHeader();
 }
 
@@ -30,7 +30,7 @@ void Session::ReadHeader() {
                                 if (!ec && message_.DecodeHeader()) {
                                     ReadBody();
                                 } else {
-                                    room_.Leave(shared_from_this());
+                                    rooms_data_[current_room_id_].Leave(shared_from_this());
                                 }
                             });
 }
@@ -40,10 +40,18 @@ void Session::ReadBody() {
     boost::asio::async_read(socket_, boost::asio::buffer(message_.Body(), message_.BodyLength()),
                             [this, self](boost::system::error_code ec, size_t) {
                                 if (!ec) {
-                                    room_.Deliver(message_);
+                                    std::string msg = message_.GetBodyString();
+                                    if (msg[0] == '&') {
+                                        const std::string msg_code = msg.substr(1, msg.size() - 1);
+                                        rooms_data_[current_room_id_].Leave(shared_from_this());
+                                        rooms_data_[msg_code].Join(shared_from_this());
+                                        current_room_id_ = msg_code;
+                                    } else {
+                                        rooms_data_[current_room_id_].Deliver(message_);
+                                    }
                                     ReadHeader();
                                 } else {
-                                    room_.Leave(shared_from_this());
+                                    rooms_data_[current_room_id_].Leave(shared_from_this());
                                 }
                             });
 }
@@ -59,7 +67,7 @@ void Session::Write() {
                                          Write();
                                      }
                                  } else {
-                                     room_.Leave(shared_from_this());
+                                     rooms_data_[current_room_id_].Leave(shared_from_this());
                                  }
                              });
 }

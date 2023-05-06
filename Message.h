@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
+#include <string>
 
 class Message {
 public:
@@ -34,6 +35,8 @@ public:
     bool DecodeHeader();
 
     void EncodeHeader();
+
+    std::string GetBodyString() const;
 private:
     char data_[HEADER_LENGTH + MAX_BODY_LENGTH];
     size_t body_size_;

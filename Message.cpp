@@ -51,3 +51,11 @@ void Message::EncodeHeader() {
     sprintf(header, "%4d", static_cast<int>(body_size_));
     memcpy(data_, header, HEADER_LENGTH);
 }
+
+std::string Message::GetBodyString() const {
+    std::string str;
+    for (size_t index = HEADER_LENGTH; index < HEADER_LENGTH + body_size_; ++index) {
+        str += data_[index];
+    }
+    return str;
+}
