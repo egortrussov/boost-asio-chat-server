@@ -1,0 +1,4 @@
+/snap/clion/235/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/235/bin/ninja/linux/x64/ninja -DCMAKE_CXX_COMPILER=/usr/bin/clang++-14 -G Ninja -S /home/yegor/data/cpp/boost-chat -B /home/yegor/data/cpp/boost-chat/cmake-build-debug
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/yegor/data/cpp/boost-chat/cmake-build-debug
