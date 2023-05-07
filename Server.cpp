@@ -13,7 +13,7 @@ Server::Server(boost::asio::io_context &io_context, const int32_t port) : accept
 void Server::DoAccept() {
     acceptor_.async_accept([this](boost::system::error_code ec, tcp::socket socket) {
         if (!ec) {
-            std::make_shared<Session>(std::move(socket), room_, rooms_data_)->Start();
+            std::make_shared<Session>(std::move(socket), rooms_data_)->Start();
         }
         DoAccept();
     });

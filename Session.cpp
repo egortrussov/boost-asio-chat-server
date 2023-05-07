@@ -6,7 +6,30 @@
 
 #include <iostream>
 
-Session::Session(tcp::socket socket, Room &room, std::unordered_map<std::string, Room>& rooms_data) : room_(room), socket_(std::move(socket)), rooms_data_(rooms_data) {
+namespace {
+    std::vector<std::pair<std::string, std::string>> ParseMessageCommands(const std::string& msg) {
+        static const char16_t COMMAND_SYMBOL = '/';
+        static const char16_t COMMAND_VALUE_SYMBOL = ':';
+        if (!std::count(msg.begin(), msg.end(), COMMAND_SYMBOL)) {
+            return {};
+        }
+        std::vector<std::pair<std::string, std::string>> result;
+        size_t current_pos = msg.find(COMMAND_SYMBOL);
+        while (current_pos < msg.size()) {
+            size_t value_begin = msg.find(COMMAND_VALUE_SYMBOL, current_pos);
+            size_t value_end = msg.find(COMMAND_SYMBOL, current_pos + 1);
+            if (value_end == std::string::npos) {
+                value_end = msg.size();
+            }
+            result.emplace_back(msg.substr(current_pos + 1, value_begin - current_pos - 1),
+                                msg.substr(value_begin + 1, value_end - value_begin - 1));
+            current_pos = value_end;
+        }
+        return result;
+    }
+}
+
+Session::Session(tcp::socket socket, std::unordered_map<std::string, Room>& rooms_data) : socket_(std::move(socket)), rooms_data_(rooms_data) {
 }
 
 void Session::Start() {
@@ -41,12 +64,7 @@ void Session::ReadBody() {
                             [this, self](boost::system::error_code ec, size_t) {
                                 if (!ec) {
                                     std::string msg = message_.GetBodyString();
-                                    if (msg[0] == '&') {
-                                        const std::string msg_code = msg.substr(1, msg.size() - 1);
-                                        rooms_data_[current_room_id_].Leave(shared_from_this());
-                                        rooms_data_[msg_code].Join(shared_from_this());
-                                        current_room_id_ = msg_code;
-                                    } else {
+                                    if (!HandleMessageCommands(msg)) {
                                         rooms_data_[current_room_id_].Deliver(message_);
                                     }
                                     ReadHeader();
@@ -72,3 +90,18 @@ void Session::Write() {
                              });
 }
 
+bool Session::HandleMessageCommands(const std::string& msg) {
+    const std::vector<std::pair<std::string, std::string>> commands = ParseMessageCommands(msg);
+    if (commands.empty()) {
+        return false;
+    }
+
+    for (const auto& [command, value] : commands) {
+        if (command == "swr") {
+            rooms_data_[current_room_id_].Leave(shared_from_this());
+            rooms_data_[value].Join(shared_from_this());
+            current_room_id_ = value;
+        }
+    }
+    return true;
+}

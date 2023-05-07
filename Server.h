@@ -22,7 +22,6 @@ private:
     void DoAccept();
 
     tcp::acceptor acceptor_;
-    Room room_;
     std::unordered_map<std::string, Room> rooms_data_;
 };
 
