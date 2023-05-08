@@ -1,3 +1,4 @@
 /home/yegor/data/cpp/boost-chat/cmake-build-debug/CMakeFiles/boost_chat.dir
+/home/yegor/data/cpp/boost-chat/cmake-build-debug/CMakeFiles/boost_chat_client.dir
 /home/yegor/data/cpp/boost-chat/cmake-build-debug/CMakeFiles/edit_cache.dir
 /home/yegor/data/cpp/boost-chat/cmake-build-debug/CMakeFiles/rebuild_cache.dir

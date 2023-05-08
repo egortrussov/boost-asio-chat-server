@@ -101,6 +101,49 @@ build /home/yegor/data/cpp/boost-chat/boost_chat: CXX_EXECUTABLE_LINKER__boost_c
   TARGET_FILE = /home/yegor/data/cpp/boost-chat/boost_chat
   TARGET_PDB = boost_chat.dbg
 
+# =============================================================================
+# Object build statements for EXECUTABLE target boost_chat_client
+
+
+#############################################
+# Order-only phony target for boost_chat_client
+
+build cmake_object_order_depends_target_boost_chat_client: phony || CMakeFiles/boost_chat_client.dir
+
+build CMakeFiles/boost_chat_client.dir/client.cpp.o: CXX_COMPILER__boost_chat_client_Debug /home/yegor/data/cpp/boost-chat/client.cpp || cmake_object_order_depends_target_boost_chat_client
+  DEP_FILE = CMakeFiles/boost_chat_client.dir/client.cpp.o.d
+  FLAGS = -g -fcolor-diagnostics -std=gnu++17
+  OBJECT_DIR = CMakeFiles/boost_chat_client.dir
+  OBJECT_FILE_DIR = CMakeFiles/boost_chat_client.dir
+
+build CMakeFiles/boost_chat_client.dir/Message.cpp.o: CXX_COMPILER__boost_chat_client_Debug /home/yegor/data/cpp/boost-chat/Message.cpp || cmake_object_order_depends_target_boost_chat_client
+  DEP_FILE = CMakeFiles/boost_chat_client.dir/Message.cpp.o.d
+  FLAGS = -g -fcolor-diagnostics -std=gnu++17
+  OBJECT_DIR = CMakeFiles/boost_chat_client.dir
+  OBJECT_FILE_DIR = CMakeFiles/boost_chat_client.dir
+
+build CMakeFiles/boost_chat_client.dir/ClientReciever.cpp.o: CXX_COMPILER__boost_chat_client_Debug /home/yegor/data/cpp/boost-chat/ClientReciever.cpp || cmake_object_order_depends_target_boost_chat_client
+  DEP_FILE = CMakeFiles/boost_chat_client.dir/ClientReciever.cpp.o.d
+  FLAGS = -g -fcolor-diagnostics -std=gnu++17
+  OBJECT_DIR = CMakeFiles/boost_chat_client.dir
+  OBJECT_FILE_DIR = CMakeFiles/boost_chat_client.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target boost_chat_client
+
+
+#############################################
+# Link the executable /home/yegor/data/cpp/boost-chat/boost_chat_client
+
+build /home/yegor/data/cpp/boost-chat/boost_chat_client: CXX_EXECUTABLE_LINKER__boost_chat_client_Debug CMakeFiles/boost_chat_client.dir/client.cpp.o CMakeFiles/boost_chat_client.dir/Message.cpp.o CMakeFiles/boost_chat_client.dir/ClientReciever.cpp.o
+  FLAGS = -g
+  OBJECT_DIR = CMakeFiles/boost_chat_client.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = /home/yegor/data/cpp/boost-chat/boost_chat_client
+  TARGET_PDB = boost_chat_client.dbg
+
 
 #############################################
 # Utility command for edit_cache
@@ -129,6 +172,8 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 
 build boost_chat: phony /home/yegor/data/cpp/boost-chat/boost_chat
 
+build boost_chat_client: phony /home/yegor/data/cpp/boost-chat/boost_chat_client
+
 # =============================================================================
 # Folder targets.
 
@@ -137,7 +182,7 @@ build boost_chat: phony /home/yegor/data/cpp/boost-chat/boost_chat
 #############################################
 # Folder: /home/yegor/data/cpp/boost-chat/cmake-build-debug
 
-build all: phony /home/yegor/data/cpp/boost-chat/boost_chat
+build all: phony /home/yegor/data/cpp/boost-chat/boost_chat /home/yegor/data/cpp/boost-chat/boost_chat_client
 
 # =============================================================================
 # Built-in targets
