@@ -7,9 +7,120 @@
 #include <cstdlib>
 #include <deque>
 #include <boost/asio.hpp>
-#include "Message.h"
+//#include "Message.h"
 using boost::asio::ip::tcp;
 using namespace std;
+
+class Message {
+public:
+    static const size_t HEADER_LENGTH = 4;
+    static const size_t MAX_BODY_LENGTH = 1024;
+
+    Message();
+
+    const char* Data() const;
+    char* Data();
+
+    size_t Length();
+
+    const char* Body() const;
+    char* Body();
+
+    size_t BodyLength() const;
+    void BodyLength(const size_t new_size);
+
+    bool DecodeHeader();
+    void EncodeHeader();
+
+    std::string GetBodyString() const;
+    std::string GetMessageString() const;
+
+
+    void SetBody(const std::string& msg);
+private:
+    char data_[HEADER_LENGTH + MAX_BODY_LENGTH];
+    size_t body_size_;
+};
+
+
+
+Message::Message() : body_size_(0) {
+}
+
+char *Message::Data() {
+    return data_;
+}
+
+const char *Message::Data() const {
+    return data_;
+}
+
+size_t Message::Length() {
+    return HEADER_LENGTH + body_size_;
+}
+
+const char *Message::Body() const {
+    return data_ + HEADER_LENGTH;
+}
+
+char *Message::Body() {
+    return data_ + HEADER_LENGTH;
+}
+
+size_t Message::BodyLength() const {
+    return body_size_;
+}
+
+void Message::BodyLength(const size_t new_size) {
+    body_size_ = std::min(size_t(1024), new_size);
+}
+
+bool Message::DecodeHeader() {
+    char header[HEADER_LENGTH + 1] = "";
+    strncat(header, data_, HEADER_LENGTH);
+    body_size_ = atoi(header);
+    if (body_size_ > MAX_BODY_LENGTH) {
+        body_size_ = 0;
+        return false;
+    }
+    return true;
+}
+
+void Message::EncodeHeader() {
+    char header[HEADER_LENGTH + 1] = "";
+    sprintf(header, "%4d", static_cast<int>(body_size_));
+    memcpy(data_, header, HEADER_LENGTH);
+}
+
+std::string Message::GetBodyString() const {
+    std::string str;
+    for (size_t index = HEADER_LENGTH; index < HEADER_LENGTH + body_size_; ++index) {
+        str += data_[index];
+    }
+    return str;
+}
+
+std::string Message::GetMessageString() const {
+    std::string str;
+    for (size_t index = 0; index < HEADER_LENGTH + body_size_; ++index) {
+        str += data_[index];
+    }
+    return str;
+}
+
+void Message::SetBody(const std::string &msg) {
+    if (msg.size() > MAX_BODY_LENGTH) {
+        return;
+    }
+    body_size_ = msg.size();
+    for (size_t index = 0; index < msg.size(); ++index) {
+        data_[HEADER_LENGTH + index] = msg[index];
+    }
+    EncodeHeader();
+}
+
+
+
 typedef deque<Message> messageQueue;
 class client {
 public:

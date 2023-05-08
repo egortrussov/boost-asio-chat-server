@@ -59,3 +59,22 @@ std::string Message::GetBodyString() const {
     }
     return str;
 }
+
+std::string Message::GetMessageString() const {
+    std::string str;
+    for (size_t index = 0; index < HEADER_LENGTH + body_size_; ++index) {
+        str += data_[index];
+    }
+    return str;
+}
+
+void Message::SetBody(const std::string &msg) {
+    if (msg.size() > MAX_BODY_LENGTH) {
+        return;
+    }
+    body_size_ = msg.size();
+    for (size_t index = 0; index < msg.size(); ++index) {
+        data_[HEADER_LENGTH + index] = msg[index];
+    }
+    EncodeHeader();
+}

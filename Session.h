@@ -29,12 +29,12 @@ private:
     void Write();
 
     bool HandleMessageCommands(const std::string& msg);
+    void FormatMessageBeforeDelivery();
 
     std::deque<Message> message_queue_;
     tcp::socket socket_;
     Message message_;
     std::unordered_map<std::string, Room>& rooms_data_;
-    std::string current_room_id_;
 };
 
 

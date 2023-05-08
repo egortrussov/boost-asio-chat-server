@@ -11,6 +11,10 @@ class User {
 public:
     virtual void Deliver(const Message& message) = 0;
     virtual ~User() = default;
+
+protected:
+    std::string current_room_id_;
+    std::string username_;
 };
 
 

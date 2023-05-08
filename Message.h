@@ -25,18 +25,19 @@ public:
     size_t Length();
 
     const char* Body() const;
-
     char* Body();
 
     size_t BodyLength() const;
-
     void BodyLength(const size_t new_size);
 
     bool DecodeHeader();
-
     void EncodeHeader();
 
     std::string GetBodyString() const;
+    std::string GetMessageString() const;
+
+
+    void SetBody(const std::string& msg);
 private:
     char data_[HEADER_LENGTH + MAX_BODY_LENGTH];
     size_t body_size_;

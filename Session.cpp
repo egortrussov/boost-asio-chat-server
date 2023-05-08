@@ -65,6 +65,7 @@ void Session::ReadBody() {
                                 if (!ec) {
                                     std::string msg = message_.GetBodyString();
                                     if (!HandleMessageCommands(msg)) {
+                                        FormatMessageBeforeDelivery();
                                         rooms_data_[current_room_id_].Deliver(message_);
                                     }
                                     ReadHeader();
@@ -102,6 +103,15 @@ bool Session::HandleMessageCommands(const std::string& msg) {
             rooms_data_[value].Join(shared_from_this());
             current_room_id_ = value;
         }
+        if (command == "usr") {
+            username_ = value;
+        }
     }
     return true;
+}
+
+void Session::FormatMessageBeforeDelivery() {
+    auto tm = message_.GetBodyString();
+    message_.SetBody(username_ + ": " + message_.GetBodyString());
+    std::cout << message_.GetBodyString() << std::endl;
 }
